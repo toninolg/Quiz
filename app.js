@@ -6,7 +6,6 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var partials = require('express-partials');
 var methodOverride = require('method-override');
-var hstore = require('pg-hstore');
 
 var routes = require('./routes/index');
 
