@@ -12,9 +12,7 @@ exports.load = function(req, res, next, quizId) {
       		next(new Error('No existe quizId=' + quizId)); 
       	}
     }
-    ).catch(function(error) {
-        next(error);
-    });
+    ).catch(function(error) { next(error) });
 };
 
 // GET /quizes
@@ -26,18 +24,14 @@ exports.index = function(req, res) {
    		function(quizes) {
             res.render('quizes/index.ejs', { quizes: quizes, errors: []});
    		}
-        ).catch(function(eror) {
-            next(error);
-        })
+        ).catch(function(error) {next(error)});
 	}
 	else {
 		models.Quiz.findAll().then(
 		function(quizes) {
             res.render('quizes/index.ejs', { quizes: quizes, errors: []});
 		}
-        ).catch(function(error) {
-            next(error);
-        })
+        ).catch(function(error) {next(error)});
 	}
 };
 
@@ -58,7 +52,7 @@ exports.show = function(req, res) {
 // GET /quizes/new
 exports.new = function(req, res) {
   var quiz = models.Quiz.build(
-    {pregunta: "", respuesta: ""}
+    {pregunta: "Pregunta", respuesta: "Respuesta"}
   );
 
   res.render('quizes/new', {quiz: quiz, errors: []});
@@ -80,7 +74,7 @@ exports.create = function(req, res) {
           .then( function(){ res.redirect('/quizes')})
         }      // res.redirect: Redirección HTTP a lista de preguntas
       }
-    );
+    ).catch(function(error){next(error)});
 };
 
 // GET /quizes/:id/edit
@@ -107,7 +101,14 @@ exports.update = function(req, res) {
         .then( function(){ res.redirect('/quizes');});
       }     // Redirección HTTP a lista de preguntas (URL relativo)
     }
-  );
+  ).catch(function(error){next(error)});
+};
+
+// DELETE /quizes/:id
+exports.destroy = function(req, res) {
+  req.quiz.destroy().then( function() {
+    res.redirect('/quizes');
+  }).catch(function(error){next(error)});
 };
 
 // GET /author
