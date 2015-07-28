@@ -16,6 +16,7 @@ router.param('commentId', commentController.load);  // autoload :commentId
 
 
 router.get('/author', quizController.author);
+router.get('/session_expired', quizController.session_expired);
 
 
 // Definición de rutas de sesion

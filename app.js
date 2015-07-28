@@ -39,6 +39,27 @@ app.use(function(req, res, next) {
   next();
 });
 
+// tiempo de sesion
+app.use(function(req,res, next) {
+    var msecSinceEpoch = (new Date()).getTime();
+    if (req.session.user) { // Si hay un usuario que hizo log in
+        if (!req.session.timestamp) { // Primera vez que el usuario hace una transaccion
+            req.session.timestamp = msecSinceEpoch;
+        }
+        else {
+            if (msecSinceEpoch - req.session.timestamp > 120000){ //sesión ha expirado
+                delete req.session.user;
+                delete req.session.timestamp;
+                res.redirect('/session_expired');
+            }
+            else {
+                req.session.timestamp = msecSinceEpoch;
+            }
+        }
+    }
+    next();
+});
+
 app.use('/', routes);
 
 /// catch 404 and forwarding to error handler
