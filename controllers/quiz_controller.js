@@ -127,3 +127,39 @@ exports.author = function(req, res) {
 exports.session_expired = function(req, res) {
     res.render('session_expired', {errors: []});
 }
+
+// GET /quizes/statistics
+exports.statistics = function(req, res, next) {
+    var stats = {
+        questions : 0,
+        comments : 0,
+        commentsforquestion : 0,
+        questionswithoutcomments : 0,
+        questionswithcomments : 0,
+    };
+
+    models.Quiz.count()
+    .then(function (questions) {
+        stats.questions = questions;
+        return models.Comment.count();
+    }).then(function (comments) {
+        stats.comments = comments;
+        return models.Quiz.findAndCountAll({
+                    include: [
+                        {
+                            model: models.Comment,
+                            required: true,
+                            where: {
+                                publicado: true
+                            }
+                        }
+                    ],
+                    distinct: true
+                });
+    }).then(function (questionswithComments) {
+        stats.questionswithcomments = questionswithComments.count;
+        stats.questionswithoutcomments = stats.questions - stats.questionswithcomments;
+        stats.commentsforquestion = (stats.questions ? (stats.comments/stats.questions).toFixed(2) : 0);
+        res.render('quizes/statistics', {stats: stats, errors: []});
+    }).catch(function(error){next(error)});
+}

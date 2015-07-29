@@ -17,7 +17,7 @@ router.param('commentId', commentController.load);  // autoload :commentId
 
 router.get('/author', quizController.author);
 router.get('/session_expired', quizController.session_expired);
-
+router.get('/quizes/statistics', quizController.statistics);
 
 // Definición de rutas de sesion
 router.get('/login',  sessionController.new);     // formulario login
